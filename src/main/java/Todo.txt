@@ -1,0 +1,2 @@
+This game looks like it will have the "player", this player will have to look for food
+whilst avoiding obstructions such as WORMHOLES,GAS_CLOUDS and ASTEROID_FIELDS;
