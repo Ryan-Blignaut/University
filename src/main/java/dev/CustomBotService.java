@@ -35,7 +35,7 @@ public class CustomBotService extends BaseBot
 	protected void onUpdate()
 	{
 		playerAction.action = PlayerActions.FORWARD;
-
+//		test of branching ryan
 
 		if (!gameState.getGameObjects().isEmpty())
 		{
@@ -50,8 +50,6 @@ public class CustomBotService extends BaseBot
 
 //		if too close to edge
 //		if ()
-
-
 
 
 		playerAction.heading = heading;
