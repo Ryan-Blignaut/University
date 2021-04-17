@@ -1,11 +1,16 @@
 package Services;
 
+import Enums.ObjectTypes;
 import Enums.PlayerActions;
-import Models.*;
+import Models.GameObject;
+import Models.GameState;
+import Models.PlayerAction;
 import dev.bot.IBaseBot;
 
+import java.util.Comparator;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 public class BotService implements IBaseBot
 {
@@ -25,11 +30,6 @@ public class BotService implements IBaseBot
 		return this.bot;
 	}
 
-	@Override
-	public boolean isAlive()
-	{
-		return true;
-	}
 
 	public void setBot(GameObject bot)
 	{
@@ -49,29 +49,17 @@ public class BotService implements IBaseBot
 	public void computeNextPlayerAction(PlayerAction playerAction)
 	{
 		playerAction.action = PlayerActions.FORWARD;
-//		playerAction.heading = new Random().nextInt(360);
-		playerAction.heading = 1;
+		playerAction.heading = new Random().nextInt(360);
+
 		if (!gameState.getGameObjects().isEmpty())
 		{
-//			var foodList = gameState.getGameObjects()
-//					.stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD)
-//					.sorted(Comparator
-//							.comparing(item -> getDistanceBetween(bot, item)))
-//					.collect(Collectors.toList());
-//
-//			playerAction.heading = getHeadingBetween(foodList.get(0));
+			var foodList = gameState.getGameObjects()
+					.stream().filter(item -> item.getGameObjectType() == ObjectTypes.FOOD)
+					.sorted(Comparator
+							.comparing(item -> getDistanceBetween(bot, item)))
+					.collect(Collectors.toList());
 
-			playerAction.heading = getHeading(playerAction.heading);
-
-
-//			see if we are "close" to a player and if we are decently bigger than it
-//			gameState.getPlayerGameObjects().forEach(player ->
-//			{
-//				if (getDistanceBetween(bot, player) < 64 && (bot.getSize() + 10) > player.getSize())
-//					playerAction.setHeading(getHeadingBetween(player));
-//			});
-
-
+			playerAction.heading = getHeadingBetween(foodList.get(0));
 		}
 
 		this.playerAction = playerAction;
@@ -113,54 +101,5 @@ public class BotService implements IBaseBot
 		return (int) (v * (180 / Math.PI));
 	}
 
-
-	private int getHeading(int current)
-	{
-
-
-		AtomicInteger heading = new AtomicInteger(current);
-/*
-		gameState.getGameObjects().stream().forEach(gameObject ->
-		{
-//			close enough to be careful of
-			if (getDistanceBetween(bot, gameObject) > bot.getSize() * 2)
-			{
-				if (gameObject.gameObjectType.getDangerLevel() == ObjectTypes.DangerLevel.BAD)
-				{
-//					run away
-//					final int objX = gameObject.getPosition().getX();
-//					final int objY = gameObject.getPosition().getY();
-//					final int botX = bot.getPosition().getX();
-//					final int botY = bot.getPosition().getY();
-					heading.set(-getHeadingBetween(gameObject));
-
-
-				}
-			}
-		});*/
-
-
-//		Code to detect when we are too close to the world border
-		final World world = gameState.getWorld();
-		final double distanceBetweenBotAndEdge = getDistanceBetween(bot.position, world.getCenterPoint());
-		if (distanceBetweenBotAndEdge + bot.getSize() * 2 > world.getRadius())
-			heading.set(getHeadingBetween(world.getCenterPoint()));
-
-		return heading.get();
-	}
-
-	private double getDistanceBetween(Position position1, Position position2)
-	{
-		final int triangleX = Math.abs(position1.x - position2.x);
-		final int triangleY = Math.abs(position1.y - position2.y);
-		return Math.sqrt(triangleX * triangleX + triangleY * triangleY);
-	}
-
-	private int getHeadingBetween(Position position)
-	{
-		var direction = toDegrees(Math.atan2(position.y - bot.getPosition().y,
-				position.x - bot.getPosition().x));
-		return (direction + 360) % 360;
-	}
 
 }

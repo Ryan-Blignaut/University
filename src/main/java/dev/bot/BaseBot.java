@@ -11,7 +11,6 @@ public abstract class BaseBot implements IBaseBot
 	protected GameObject bot;
 	protected PlayerAction playerAction;
 	protected GameState gameState;
-	private boolean alive = true;
 
 	public BaseBot()
 	{
@@ -40,7 +39,6 @@ public abstract class BaseBot implements IBaseBot
 	@Override
 	public void computeNextPlayerAction(PlayerAction playerAction)
 	{
-		alive = gameState.getPlayerGameObjects().contains(bot);
 		onUpdate();
 	}
 
@@ -51,12 +49,6 @@ public abstract class BaseBot implements IBaseBot
 		Optional<GameObject> optionalBot = gameState.getPlayerGameObjects().stream().filter(gameObject -> gameObject.id.equals(bot.id)).findAny();
 		optionalBot.ifPresent(bot -> this.bot = bot);
 		firstRun();
-	}
-
-	@Override
-	public boolean isAlive()
-	{
-		return alive;
 	}
 
 	protected abstract void firstRun();

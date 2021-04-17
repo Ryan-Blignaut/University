@@ -16,7 +16,6 @@ public interface IBaseBot
 
 	GameObject getBot();
 
-	boolean isAlive();
 
 }
 	
