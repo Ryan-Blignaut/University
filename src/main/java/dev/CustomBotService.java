@@ -3,7 +3,6 @@ package dev;
 import Enums.ObjectTypes;
 import Enums.PlayerActions;
 import Models.GameObject;
-import Models.World;
 import dev.bot.BaseBot;
 
 import java.util.Comparator;
@@ -25,7 +24,6 @@ public class CustomBotService extends BaseBot
 
 	private int heading;
 	private GameObject target;
-	private GameObject prevTarget;
 
 	@Override
 	protected void firstRun()
@@ -37,7 +35,7 @@ public class CustomBotService extends BaseBot
 	protected void onUpdate()
 	{
 		playerAction.action = PlayerActions.FORWARD;
-
+//		test of branching ryan
 
 		if (!gameState.getGameObjects().isEmpty())
 		{
@@ -45,25 +43,13 @@ public class CustomBotService extends BaseBot
 			{
 				System.out.println("looking for new target");
 				heading = searchForNewTarget();
-				prevTarget = target;
-			} else
-			{
-				final Optional<GameObject> first = gameState.getGameObjects().stream().filter(gameObject -> gameObject.id == target.id).findFirst();
-				if (first.isPresent())
-				{
-
-				} else
-				{
-					searchForNewTarget();
-				}
-
-
 			}
-			final World world = gameState.getWorld();
-			final double distanceBetweenBotAndEdge = Util.getDistancePositionsBetween(bot.getPosition(), world.getCenterPoint());
-			if (distanceBetweenBotAndEdge + bot.getSize() * 2 > world.getRadius())
-				heading = (Util.getHeadingBetween(bot, world.getCenterPoint()));
+
 		}
+
+
+//		if too close to edge
+//		if ()
 
 
 		playerAction.heading = heading;
@@ -72,7 +58,6 @@ public class CustomBotService extends BaseBot
 	private int searchForNewTarget()
 	{
 		final int direction;
-		final World world = gameState.getWorld();
 		final List<GameObject> list = gameState.getGameObjects();
 		final Optional<GameObject> closetFood = getCloset(list, gameObject -> gameObject.getGameObjectType() == ObjectTypes.FOOD);
 		final Optional<GameObject> closetWormHole = getCloset(list, gameObject -> gameObject.getGameObjectType() == ObjectTypes.WORMHOLE);
@@ -88,12 +73,12 @@ public class CustomBotService extends BaseBot
 			target = closetPlayer.get();
 		} else if (closetFood.isPresent())
 		{
+			System.out.println("Going for a food");
 			direction = Util.getHeadingBetween(bot, closetFood.get());
 			target = closetFood.get();
 		} else
 		{
-			direction = 180;
-			target = null;
+			direction = 1;
 		}
 		return direction;
 	}
